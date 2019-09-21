@@ -1,34 +1,43 @@
 ﻿using System;
-using Meta.PoorMansDi;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class AppStateContainer : DiMonoBehavior
+public class AppStateContainer : IAppControls
 {
     private AppState currentState;
 
-    protected override void Awake()
+    public void StartGame()
     {
-        base.Awake();
-        DontDestroyOnLoad(this.gameObject);
-        currentState = AppState.GameNotStarted;
-        LoadMainMenu();
+        if (currentState == AppState.GameNotStarted)
+        {
+            SceneManager.UnloadSceneAsync("MainMenu");
+            SceneManager.LoadScene("Prototype");
+        }
     }
 
-    private void LoadMainMenu()
+    public bool CanLoadAndContinue => false;
+
+    public void LoadGameAndContinue()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ExitFromGame()
+    {
+        Application.Quit();
+    }
+
+    public void LoadMenu()
     {
         SceneManager.LoadScene("MainMenu");
     }
+}
 
-    private void LoadPrototypeScene()
-    {
-        SceneManager.LoadScene("Prototype");
-    }
-
-    private void Update()
-    {
-        
-    }
+interface IGamePauseControls
+{
+    void PauseToMenu();
+    void ResumeGame();
+    void RestartGame();
 }
 
 public enum AppState

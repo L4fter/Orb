@@ -1,8 +1,8 @@
 {
-    "name": "Orb.Ui",
+    "name": "Orb.Context",
     "references": [
-        "GUID:6055be8ebefd69e48b49212b09b47b2f",
         "GUID:7e0c5f5165dd0494d97278ea102a9bc6",
+        "GUID:ab9158aad707c7d43a4e31a0714f8d47",
         "GUID:9823a9ce5f7efe343879959180895cf5"
     ],
     "includePlatforms": [],

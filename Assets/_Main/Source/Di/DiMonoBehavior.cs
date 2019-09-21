@@ -7,7 +7,7 @@ namespace Meta.PoorMansDi
     {
         protected virtual void Awake()
         {
-            SimpleDi.Injector.InjectInto(this);
+            DiBase.Injector.InjectInto(this);
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Meta.PoorMansDi
 {
-    public class SimpleDi : IBinder, IResolver, IInjector
+    public class SimpleDi : DiBase, IBinder, IResolver, IInjector
     {
         private readonly Dictionary<Type, Binding> bindings = new Dictionary<Type, Binding>();
         private readonly Dictionary<Type, object> singletons = new Dictionary<Type, object>();
@@ -18,7 +18,7 @@ namespace Meta.PoorMansDi
             Bind<IInjector>().ToSingle(this);
         }
 
-        public static IInjector Injector { get; private set; }
+        public IBinder Binder => this;
 
         public IBinding Bind<T>()
         {
@@ -107,11 +107,6 @@ namespace Meta.PoorMansDi
         }
     }
 
-    public interface IInjector
-    {
-        void InjectInto(object o);
-    }
-
     public class Binding : IBinding
     {
         public bool IsSingleton { get; private set; }
@@ -136,22 +131,5 @@ namespace Meta.PoorMansDi
             Value = o;
             IsValue = true;
         }
-    }
-
-    public interface IBinder
-    {
-        IBinding Bind<T>();
-    }
-
-    public interface IBinding
-    {
-        void To<T>();
-        void ToSingle<T>();
-        void ToSingle(object o);
-    }
-
-    public interface IResolver
-    {
-        T Resolve<T>();
     }
 }
