@@ -21,13 +21,13 @@ public class Shooter : MonoBehaviour
         var direction = (mousePos2d - pos2d).normalized;
         Debug.DrawLine(pos2d, pos2d + direction, Color.red);
         
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             var distanceFromCenter = this.transform.localScale.x * 0.1f + 0.1f;
             var bullet = Instantiate(BulletPrefab, pos2d + direction * distanceFromCenter, Quaternion.identity);
             var gravitatingObject = bullet.GetComponent<GravitatingObject>();
             gravitatingObject.velocity = this.GetComponent<GravitatingObject>().velocity;
-            gravitatingObject.StartAcceleration(direction * 0.5f, 0.1f);
+            gravitatingObject.StartAcceleration(direction*3, 0.1f);
         }    
     }
 }

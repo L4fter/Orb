@@ -1,13 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class GravitatingObject : MonoBehaviour
+public class GravitatingObject : MonoBehaviour, ISimulatedEntity
 {
     public const float GConstant = 0.005f;
-    public const float SimulationTimeScale = 3f;
-    
     public Vector2 velocity;
-    public float Mass = 1;
+    [FormerlySerializedAs("Mass")]
+    public float mass = 1;
 
     public bool attractsOthers = false;
     public bool isAttractedByOthers = true;
@@ -15,43 +16,27 @@ public class GravitatingObject : MonoBehaviour
 
     public float accelerationTime = 0f;
 
+    private void Start()
+    {
+        this.Position = this.transform.position;
+
+        FindObjectOfType<GlobalSolver>().Solver.AddEntity(this);
+    }
+
+    private void OnDestroy()
+    {
+        FindObjectOfType<GlobalSolver>().Solver?.RemoveEntity(this);
+    }
+
     public void StartAcceleration(Vector2 acc, float time)
     {
-        acceleration = acc;
-        accelerationTime = time;
+        Acceleration = acc;
+        TimeForAcceleration = time;
     }
 
     void FixedUpdate()
     {
-        if (accelerationTime > 0)
-        {
-            velocity += SimulationTimeScale * Time.fixedDeltaTime * acceleration;
-            accelerationTime -= Time.fixedDeltaTime;
-        }
-        
-        if (!isAttractedByOthers)
-        {
-            return;
-        }
-        
-        var maxDeltaV = 5;
-        var gravitatingObjects = FindObjectsOfType<GravitatingObject>();
-        var totalDeltaV = Vector3.zero;
-
-        foreach (var celestialBody in gravitatingObjects.Where(o => o.attractsOthers).Where(o => o != this))
-        {
-            var direction = celestialBody.transform.position - this.transform.position;
-            var r2 = Mathf.Max(direction.sqrMagnitude, 0.00001f);
-            var deltaV = (GConstant * celestialBody.Mass / r2) * direction.normalized;
-
-            totalDeltaV += deltaV;
-        }
-        
-        var totalDeltaV2d = Vector2.ClampMagnitude(new Vector2(totalDeltaV.x, totalDeltaV.y), maxDeltaV);
-
-        this.velocity += Time.fixedDeltaTime * SimulationTimeScale * totalDeltaV2d;
-        
-        this.transform.Translate(Time.fixedDeltaTime * SimulationTimeScale * velocity);
+        this.transform.position = Position;
     }
 
     public void GetCircularOrbitAround(GravitatingObject other)
@@ -62,6 +47,14 @@ public class GravitatingObject : MonoBehaviour
         var v = Mathf.Sqrt(mu / radius.magnitude);
         
         var tangent = new Vector2(radius.y, -radius.x).normalized;
-        this.velocity = tangent * v;
+        this.Velocity = tangent * v;
     }
+
+    public bool IsAttractedByOthers => isAttractedByOthers;
+    public bool AttractsOthers => attractsOthers;
+    public float Mass => this.mass;
+    public Vector2 Position { get; set; }
+    public Vector2 Velocity { get; set; }
+    public Vector2 Acceleration { get; private set; }
+    public float TimeForAcceleration { get; set; }
 }
