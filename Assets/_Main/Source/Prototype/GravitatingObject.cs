@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class GravitatingObject : MonoBehaviour
 {
-    public const float GConstant = 0.0005f;
+    public const float GConstant = 0.005f;
+    public const float SimulationTimeScale = 3f;
     
     public Vector2 velocity;
     public float Mass = 1;
@@ -12,7 +13,7 @@ public class GravitatingObject : MonoBehaviour
     public bool isAttractedByOthers = true;
     public Vector2 acceleration;
 
-    public float accelerationTime = 1f;
+    public float accelerationTime = 0f;
 
     public void StartAcceleration(Vector2 acc, float time)
     {
@@ -24,7 +25,7 @@ public class GravitatingObject : MonoBehaviour
     {
         if (accelerationTime > 0)
         {
-            velocity += acceleration;
+            velocity += SimulationTimeScale * Time.fixedDeltaTime * acceleration;
             accelerationTime -= Time.fixedDeltaTime;
         }
         
@@ -41,15 +42,26 @@ public class GravitatingObject : MonoBehaviour
         {
             var direction = celestialBody.transform.position - this.transform.position;
             var r2 = Mathf.Max(direction.sqrMagnitude, 0.00001f);
-            var deltaV = direction.normalized * (GConstant * celestialBody.Mass / r2);
+            var deltaV = (GConstant * celestialBody.Mass / r2) * direction.normalized;
 
             totalDeltaV += deltaV;
         }
         
         var totalDeltaV2d = Vector2.ClampMagnitude(new Vector2(totalDeltaV.x, totalDeltaV.y), maxDeltaV);
 
-        this.velocity += totalDeltaV2d;
+        this.velocity += Time.fixedDeltaTime * SimulationTimeScale * totalDeltaV2d;
         
-        this.transform.Translate(velocity * Time.fixedDeltaTime);
+        this.transform.Translate(Time.fixedDeltaTime * SimulationTimeScale * velocity);
+    }
+
+    public void GetCircularOrbitAround(GravitatingObject other)
+    {
+        var radius = this.transform.position - other.transform.position;
+        var mu = other.Mass * GConstant;
+         
+        var v = Mathf.Sqrt(mu / radius.magnitude);
+        
+        var tangent = new Vector2(radius.y, -radius.x).normalized;
+        this.velocity = tangent * v;
     }
 }
