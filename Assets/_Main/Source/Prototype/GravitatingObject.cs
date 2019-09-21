@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GravitatingObject : MonoBehaviour
 {
-    public const float GConstant = 0.05f;
+    public const float GConstant = 0.001f;
     
     public Vector2 velocity;
     public float Mass = 1;
@@ -18,14 +18,14 @@ public class GravitatingObject : MonoBehaviour
             return;
         }
         
-        var maxDeltaV = 1;
+        var maxDeltaV = 5;
         var gravitatingObjects = FindObjectsOfType<GravitatingObject>();
         var totalDeltaV = Vector3.zero;
 
         foreach (var celestialBody in gravitatingObjects.Where(o => o.attractsOthers).Where(o => o != this))
         {
             var direction = celestialBody.transform.position - this.transform.position;
-            var deltaV = direction.normalized * (GConstant * celestialBody.Mass / direction.sqrMagnitude);
+            var deltaV = direction.normalized * (GConstant * celestialBody.Mass / Mathf.Max(direction.sqrMagnitude, 0.00001f));
 
             totalDeltaV += deltaV;
         }
