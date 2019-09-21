@@ -1,10 +1,13 @@
-﻿using System;
-using UnityEditor.Build.Player;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
     private int damage = 20;
+
+    public void Launch(Vector2 direction)
+    {
+        
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
