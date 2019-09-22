@@ -1,13 +1,17 @@
 ﻿using System.Linq;
+using Meta.PoorMansDi;
+using UnityEngine;
 
 public class Game
 {
     private IWinLoseHandler winLoseHandler;
+    private readonly IResolver resolver;
     private CelestialSystem celestialSystem;
 
-    public Game(IWinLoseHandler winLoseHandler)
+    public Game(IWinLoseHandler winLoseHandler, IResolver resolver)
     {
         this.winLoseHandler = winLoseHandler;
+        this.resolver = resolver;
     }
 
     public void MakeTimestep(float deltaTime)
@@ -26,6 +30,27 @@ public class Game
             winLoseHandler.Lose();
         }
         
+    }
+
+    public void OnViewReady()
+    {
+        Debug.Log("View ready");
+        // Injecting stuff that couldnt be created before the game
+        // Mostly from scene, which is loaded later at unlnown time
+
+        var planetFactory = resolver.Resolve<IPlanetFactory>();
+        planetFactory.CreatePlanet(new Vector2(10, 10));
+    }
+
+    public void Discard()
+    {
+        
+    }
+
+    public void WaitForViewReady()
+    {
+        Debug.Log("Wait for view ready");
+        // just chill
     }
 }
 

@@ -139,7 +139,7 @@ namespace Meta.PoorMansDi
 
         public object Value { get; set; }
 
-        public void To<T>()
+        public void ToFactoryOf<T>()
         {
             Type = typeof(T);
         }

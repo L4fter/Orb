@@ -2,7 +2,7 @@
 {
     public interface IBinding
     {
-        void To<T>();
+        void ToFactoryOf<T>();
         void ToSingle<T>();
         void ToSingle(object o);
     }

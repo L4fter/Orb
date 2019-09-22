@@ -5,11 +5,19 @@ using UnityEngine.SceneManagement;
 public class AppStateContainer : IAppControls
 {
     private AppState currentState;
+    private IGameControls gameControls;
+
+    public AppStateContainer(IGameControls gameControls)
+    {
+        this.gameControls = gameControls;
+    }
 
     public void StartGame()
     {
         if (currentState == AppState.GameNotStarted)
         {
+            gameControls.CreateNewGame();
+            
             SceneManager.LoadScene("Prototype");
         }
     }
@@ -21,13 +29,6 @@ public class AppStateContainer : IAppControls
         throw new NotImplementedException();
     }
 
-    public void ExitToOs()
-    {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#endif
-        Application.Quit();
-    }
 
     public void LoadMenu()
     {
@@ -37,6 +38,14 @@ public class AppStateContainer : IAppControls
     public void ExitToMenu()
     {
         SceneManager.LoadScene("MainMenu");
+    }
+    
+    public void ExitToOs()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        Application.Quit();
     }
 }
 
