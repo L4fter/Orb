@@ -1,7 +1,8 @@
 {
     "name": "Orb.Meta",
     "references": [
-        "GUID:7e0c5f5165dd0494d97278ea102a9bc6"
+        "GUID:7e0c5f5165dd0494d97278ea102a9bc6",
+        "GUID:7f73392c87b51d94090fe98e482d40d1"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -25,7 +25,7 @@ public class GravitatingObject : MonoBehaviour, ISimulatedEntity
 
     private void OnDestroy()
     {
-        FindObjectOfType<GlobalSolver>().Solver?.RemoveEntity(this);
+        FindObjectOfType<GlobalSolver>()?.Solver?.RemoveEntity(this);
     }
 
     public void StartAcceleration(Vector2 acc, float time)

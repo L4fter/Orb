@@ -7,7 +7,7 @@ public class Solver
     private List<ISimulatedEntity> simulatedEntities = new List<ISimulatedEntity>();
     
     public const float GConstant = 0.005f;
-    private float SimulationTimeScale = 3;
+    private float SimulationTimeScale = 2f;
 
     public void SimulateTimeStep(float dT)
     {
@@ -70,7 +70,7 @@ public class Solver
     {
         if (simulatedEntity.TimeForAcceleration > 0)
         {
-            simulatedEntity.TimeForAcceleration -= dT;
+            simulatedEntity.TimeForAcceleration -= dT * SimulationTimeScale;
             return simulatedEntity.Acceleration;
         }
         

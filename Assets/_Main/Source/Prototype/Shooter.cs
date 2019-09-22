@@ -27,7 +27,7 @@ public class Shooter : MonoBehaviour
             var bullet = Instantiate(BulletPrefab, pos2d + direction * distanceFromCenter, Quaternion.identity);
             var gravitatingObject = bullet.GetComponent<GravitatingObject>();
             gravitatingObject.velocity = this.GetComponent<GravitatingObject>().velocity;
-            gravitatingObject.StartAcceleration(direction*3, 0.1f);
+            gravitatingObject.StartAcceleration(direction*4, 0.2f);
         }    
     }
 }

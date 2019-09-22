@@ -9,6 +9,7 @@ namespace Meta.PoorMansDi
     {
         private readonly Dictionary<Type, Binding> bindings = new Dictionary<Type, Binding>();
         private readonly Dictionary<Type, object> singletons = new Dictionary<Type, object>();
+        private readonly Dictionary<Type, object> bindedSingletons = new Dictionary<Type, object>();
 
         public SimpleDi()
         {
@@ -50,22 +51,45 @@ namespace Meta.PoorMansDi
 
         private object Resolve(Type type)
         {
-            if (singletons.ContainsKey(type))
+            if (!bindings.ContainsKey(type))
             {
-                return singletons[type];
+                throw new KeyNotFoundException($"No binding found for type {type}");
             }
-
-            if (!bindings.ContainsKey(type)) throw new KeyNotFoundException($"No binding found for type {type}");
+            
             var binding = bindings[type];
+            
+            return ResolveBinding(type, binding);
+        }
+
+        private object ResolveBinding(Type type, Binding binding)
+        {
+            if (binding.IsValue)
+            {
+                return binding.Value;
+            }
+            
             if (binding.IsSingleton)
             {
+                if (singletons.ContainsKey(type))
+                {
+                    return singletons[type];
+                }
+
+                if (bindedSingletons.ContainsKey(binding.Type))
+                {
+                    var bindedSingleton = bindedSingletons[binding.Type];
+                    singletons.Add(type, bindedSingleton);
+                    return bindedSingleton;
+                }
+                
                 var singleton = CreateInstance(binding.Type);
                 singletons.Add(type, singleton);
+                bindedSingletons.Add(singleton.GetType(), singleton);
+                
                 return singleton;
             }
 
             return CreateInstance(type);
-
         }
 
         private object CreateInstance(Type type)

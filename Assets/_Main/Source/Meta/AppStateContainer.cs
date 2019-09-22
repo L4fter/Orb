@@ -10,7 +10,6 @@ public class AppStateContainer : IAppControls
     {
         if (currentState == AppState.GameNotStarted)
         {
-            SceneManager.UnloadSceneAsync("MainMenu");
             SceneManager.LoadScene("Prototype");
         }
     }
@@ -22,12 +21,20 @@ public class AppStateContainer : IAppControls
         throw new NotImplementedException();
     }
 
-    public void ExitFromGame()
+    public void ExitToOs()
     {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
         Application.Quit();
     }
 
     public void LoadMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void ExitToMenu()
     {
         SceneManager.LoadScene("MainMenu");
     }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Meta.PoorMansDi
 {
-    public class DiMonoBehavior : MonoBehaviour
+    public class DiMonoBehaviour : MonoBehaviour
     {
         protected virtual void Awake()
         {

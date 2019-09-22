@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
 using Meta.PoorMansDi;
 
-public class AppStateLoader : DiMonoBehavior
+public class AppStateLoader : DiMonoBehaviour
 {
     private IAppControls appControls;
 

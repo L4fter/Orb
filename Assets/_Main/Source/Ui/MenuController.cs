@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
 using Meta.PoorMansDi;
 
-public class MenuController : DiMonoBehavior
+public class MenuController : DiMonoBehaviour
 {
     private IAppControls appControls;
     
@@ -18,6 +18,6 @@ public class MenuController : DiMonoBehavior
     
     public void ExitGame()
     {
-        appControls.ExitFromGame();
+        appControls.ExitToOs();
     }
 }

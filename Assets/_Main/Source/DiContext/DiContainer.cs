@@ -10,8 +10,11 @@ public class DiContainer : MonoBehaviour
         SimpleDi simpleDi = new SimpleDi();
         var binder = simpleDi.Binder;
 
-        
         binder.Bind<IAppControls>().ToSingle<AppStateContainer>();
+        binder.Bind<IWinLoseHandler>().ToSingle<WinLoseHandler>();
+        
+        binder.Bind<IGameHudController>().ToSingle<GameHudProvider>();
+        binder.Bind<GameHudProvider>().ToSingle<GameHudProvider>();
     }
 
 }

@@ -4,6 +4,7 @@
 
     bool CanLoadAndContinue { get; }
     void LoadGameAndContinue();
-    void ExitFromGame();
+    void ExitToOs();
     void LoadMenu();
+    void ExitToMenu();
 }

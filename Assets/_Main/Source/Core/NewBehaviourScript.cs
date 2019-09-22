@@ -1,11 +1,5 @@
 ﻿using System.Linq;
 
-public interface IWinLoseHandler
-{
-    void Win();
-    void Lose();
-}
-
 public class Game
 {
     private IWinLoseHandler winLoseHandler;
