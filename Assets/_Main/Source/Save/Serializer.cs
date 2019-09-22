@@ -92,7 +92,7 @@ public class Serializer : ICelestialSystemSerializer, ISerializedCelestialSystem
         central.entity.FillIn(centralStarPlanet.SimulatedEntity);
         celestialSystem.AddCentralStar(centralStarPlanet);
 
-        foreach (var serializedPlanet in scs.planets)
+        foreach (var serializedPlanet in scs.planets.Except(new []{central}))
         {
             var planet = planetFactory.CreatePlanet(serializedPlanet.entity.pos);
             serializedPlanet.entity.FillIn(planet.SimulatedEntity);

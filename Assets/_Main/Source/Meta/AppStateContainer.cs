@@ -6,16 +6,19 @@ public class AppStateContainer : IAppControls
 {
     private AppState currentState;
     private IGameProvider gameProvider;
+    private readonly ICelestialSystemSerializer csSerializer;
 
-    public AppStateContainer(IGameProvider gameProvider)
+    public AppStateContainer(IGameProvider gameProvider, ICelestialSystemSerializer csSerializer)
     {
         this.gameProvider = gameProvider;
+        this.csSerializer = csSerializer;
     }
 
     public void StartGame()
     {
         if (currentState == AppState.GameNotStarted)
         {
+            csSerializer.Clear();
             gameProvider.CreateNewGame();
             
             SceneManager.LoadScene("Prototype");
@@ -26,9 +29,9 @@ public class AppStateContainer : IAppControls
 
     public void LoadGameAndContinue()
     {
-        throw new NotImplementedException();
+        gameProvider.CreateNewGame();
+        SceneManager.LoadScene("EmptyGame");
     }
-
 
     public void LoadMenu()
     {

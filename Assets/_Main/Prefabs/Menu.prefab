@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7133324668688254805}
   - component: {fileID: 7133324668688254763}
   - component: {fileID: 7133324668688254762}
+  - component: {fileID: 1514602049818441265}
   m_Layer: 5
   m_Name: Options
   m_TagString: Untagged
@@ -73,6 +74,19 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &1514602049818441265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7133324668688254804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0f2f88fe15a54d409b7b3a3192957ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectIfNothingIsSelected: {fileID: 7133324669709816477}
 --- !u!1 &7133324668749626266
 GameObject:
   m_ObjectHideFlags: 0
@@ -1021,6 +1035,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d79d1a307aa3b584da5699d3e43791f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  continueButton: {fileID: 7133324670644806397}
 --- !u!1 &7133324670433055091
 GameObject:
   m_ObjectHideFlags: 0
@@ -1267,7 +1282,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7133324670644806387}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7133324669837480556}
+        m_MethodName: LoadGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &7133324670644806387
 MonoBehaviour:
   m_ObjectHideFlags: 0
