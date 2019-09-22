@@ -17,6 +17,10 @@ public class DiContainer : MonoBehaviour
         binder.Bind<Game>().ToFactoryOf<Game>();
         binder.Bind<CelestialSystem>().ToFactoryOf<CelestialSystem>();
         binder.Bind<Solver>().ToFactoryOf<Solver>();
+        binder.Bind<InputPlanetController>().ToSingle<InputPlanetController>();
+        binder.Bind<AiPlanetController>().ToSingle<AiPlanetController>();
+        binder.Bind<IInputReceiver>().ToSingle<InputPlanetController>();
+        binder.Bind<IUpdatesReceiver>().ToSingle<AiPlanetController>();
         
         binder.Bind<IGameHudController>().ToSingle<GameHudProvider>();
         binder.Bind<GameHudProvider>().ToSingle<GameHudProvider>();

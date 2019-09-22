@@ -6,7 +6,6 @@ public class Solver
 {
     private List<ISimulatedEntity> simulatedEntities = new List<ISimulatedEntity>();
     
-    public const float GConstant = 0.005f;
     private float SimulationTimeScale = 2f;
 
     public void SimulateTimeStep(float dT)
@@ -62,7 +61,7 @@ public class Solver
         var direction = attractor.Position - attracted.Position;
         var r2 = Mathf.Max(direction.sqrMagnitude, 0.00001f);
         
-        var deltaV = (GConstant * attractor.Mass / r2) * direction.normalized;
+        var deltaV = (OrbitalMath.GConstant * attractor.Mass / r2) * direction.normalized;
         return deltaV;
     }
 
@@ -80,6 +79,7 @@ public class Solver
     public void AddEntity(ISimulatedEntity entity)
     {
         simulatedEntities.Add(entity);
+        entity.Destroyed += () => RemoveEntity(entity);
     }
 
     public void RemoveEntity(ISimulatedEntity entity)

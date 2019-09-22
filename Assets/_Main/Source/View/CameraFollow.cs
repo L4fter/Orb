@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
@@ -12,6 +13,10 @@ public class CameraFollow : MonoBehaviour
     
     void Start()
     {
+        var findObjectsOfType = FindObjectsOfType<Planet>();
+        followee = findObjectsOfType.First(planet => planet.ControlledByPlayer).transform;
+        this.transform.position = new Vector3(followee.position.x, followee.position.y, transform.position.z);
+        
         delta = this.transform.position - followee.transform.position;
         if (directionHold)
         {

@@ -13,15 +13,20 @@ public class PlanetFactory : DiMonoBehaviour, IPlanetFactory
         binder.Bind<IPlanetFactory>().ToSingle(this);
     }
 
-    public IPlanet CreatePlanet(Vector2 Position)
+    public IPlanet CreatePlanet(Vector2 position)
     {
-        var planet = Instantiate(planetPrefab, Position, Quaternion.identity);
+        var planet = Instantiate(planetPrefab, position, Quaternion.identity);
+        planet.SimulatedEntity.Position = position;
         return planet;
     }
 
     public IPlanet[] CollectAllAvailablePlanets()
     {
         var allPlanets = FindObjectsOfType<Planet>();
+        foreach (var allPlanet in allPlanets)
+        {
+            allPlanet.SimulatedEntity.Position = allPlanet.transform.position;
+        }
         return allPlanets.Cast<IPlanet>().ToArray();
     }
 }
