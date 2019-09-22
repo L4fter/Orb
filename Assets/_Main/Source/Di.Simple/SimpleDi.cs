@@ -9,6 +9,7 @@ namespace Meta.PoorMansDi
     {
         private readonly Dictionary<Type, Binding> bindings = new Dictionary<Type, Binding>();
         private readonly Dictionary<Type, object> singletons = new Dictionary<Type, object>();
+        private readonly Dictionary<Type, Binding> duplicateBindings = new Dictionary<Type, Binding>();
         private readonly Dictionary<Type, object> bindedSingletons = new Dictionary<Type, object>();
 
         public SimpleDi()
@@ -26,7 +27,11 @@ namespace Meta.PoorMansDi
             var type = typeof(T);
             if (bindings.ContainsKey(type))
             {
-                throw new Exception($"This type already binded to {bindings[type]}");
+                var value = new Binding(this);
+                value.IsDuplicate = true;
+                value.InType = type;
+                duplicateBindings.Add(type, value);
+                return value;
             }
 
             var binding = new Binding();
@@ -129,15 +134,35 @@ namespace Meta.PoorMansDi
             var actualParams = parameterInfos.Select(info => Resolve(info.ParameterType)).ToArray();
             methodInfo.Invoke(component, actualParams);
         }
+
+        public void ReplaceAsNewBinding(Type inType, Binding binding)
+        {
+            bindings.Remove(inType);
+            duplicateBindings.Remove(inType);
+            bindings.Add(inType, binding);
+        }
     }
 
     public class Binding : IBinding
     {
+        private readonly SimpleDi simpleDi;
+
+        public Binding(SimpleDi simpleDi)
+        {
+            this.simpleDi = simpleDi;
+        }
+        
+        public Binding()
+        {
+        }
+
+        public Type InType { get; set; }
         public bool IsSingleton { get; private set; }
         public bool IsValue { get; private set; }
         public Type Type { get; set; }
 
         public object Value { get; set; }
+        public bool IsDuplicate { get; set; }
 
         public void ToFactoryOf<T>()
         {
@@ -152,6 +177,10 @@ namespace Meta.PoorMansDi
 
         public void ToSingle(object o)
         {
+            if (IsDuplicate)
+            {
+                simpleDi.ReplaceAsNewBinding(InType, this);
+            }
             Value = o;
             IsValue = true;
         }
