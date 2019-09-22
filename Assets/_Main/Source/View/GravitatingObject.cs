@@ -28,8 +28,18 @@ public class GravitatingObject : MonoBehaviour, ISimulatedEntity
         set => isAttractedByOthers = value;
     }
 
-    public bool AttractsOthers => attractsOthers;
-    public float Mass => this.mass;
+    public bool AttractsOthers
+    {
+        get => attractsOthers;
+        set => attractsOthers = value;
+    }
+
+    public float Mass
+    {
+        get => this.mass;
+        set => this.mass = value;
+    }
+
     public Vector2 Position { get; set; }
     public Vector2 Velocity { get; set; }
     public Vector2 Acceleration { get; set; }

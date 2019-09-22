@@ -1,9 +1,10 @@
 ﻿public interface IPlanet
 {
     ISimulatedEntity SimulatedEntity { get; }
-    float Hp { get; }
+    int Hp { get; }
+    int StartHp { get; }
     bool IsControlled { get; }
-    ICharacter ControlledBy { get; }
+    PlanetController ControlledBy { get; set; }
     bool ControlledByPlayer { get; set; }
     void ReceiveDamage(int damage);
 }

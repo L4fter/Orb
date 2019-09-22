@@ -24,5 +24,8 @@ public class DiContainer : MonoBehaviour
         
         binder.Bind<IGameHudController>().ToSingle<GameHudProvider>();
         binder.Bind<GameHudProvider>().ToSingle<GameHudProvider>();
+        
+        binder.Bind<ISerializedCelestialSystemProvider>().ToSingle<Serializer>();
+        binder.Bind<ICelestialSystemSerializer>().ToSingle<Serializer>();
     }
 }

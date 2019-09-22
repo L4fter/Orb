@@ -79,7 +79,6 @@ public class Solver
     public void AddEntity(ISimulatedEntity entity)
     {
         simulatedEntities.Add(entity);
-        entity.Destroyed += () => RemoveEntity(entity);
     }
 
     public void RemoveEntity(ISimulatedEntity entity)

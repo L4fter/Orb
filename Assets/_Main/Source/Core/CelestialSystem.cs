@@ -4,8 +4,10 @@ using System.Linq;
 public class CelestialSystem
 {
     private Solver solver;
-    private List<IPlanet> planets = new List<IPlanet>();
-    private IPlanet centralStar;
+    public List<IPlanet> Planets { get; } = new List<IPlanet>();
+    public List<ISimulatedEntity> Projectiles { get; } = new List<ISimulatedEntity>();
+
+    public IPlanet centralStar { get; set; }
 
     public CelestialSystem(Solver solver)
     {
@@ -33,7 +35,7 @@ public class CelestialSystem
                 continue;
             }
 
-            if (this.planets.Contains(planet))
+            if (this.Planets.Contains(planet))
             {
                 continue;
             }
@@ -43,7 +45,26 @@ public class CelestialSystem
                 centralStar.SimulatedEntity.Mass);
             
             solver.AddEntity(planet.SimulatedEntity);
-            this.planets.Add(planet);
+            this.Planets.Add(planet);
+        }
+    }
+
+    public void AddRaw(IEnumerable<IPlanet> planetsToAdd)
+    {
+        foreach (var planet in planetsToAdd)
+        {
+            if (centralStar == planet)
+            {
+                continue;
+            }
+
+            if (this.Planets.Contains(planet))
+            {
+                continue;
+            }
+           
+            solver.AddEntity(planet.SimulatedEntity);
+            this.Planets.Add(planet);
         }
     }
 
@@ -54,8 +75,14 @@ public class CelestialSystem
         solver.AddEntity(centralStar.SimulatedEntity);
     }
 
-    public void Add(ISimulatedEntity entity)
+    public void AddProjectile(ISimulatedEntity entity)
     {
+        Projectiles.Add(entity);
         solver.AddEntity(entity);
+        entity.Destroyed += () =>
+        {
+            Projectiles.Remove(entity);
+            solver.RemoveEntity(entity);
+        };
     }
 }

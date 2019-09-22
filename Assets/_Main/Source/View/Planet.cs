@@ -9,9 +9,10 @@ public class Planet : MonoBehaviour, IPlanet
     public int hp = 100;
 
     public ISimulatedEntity SimulatedEntity => GetComponent<ISimulatedEntity>();
-    public float Hp => hp;
+    public int Hp => hp;
+    public int StartHp => startHp;
     public bool IsControlled { get; }
-    public ICharacter ControlledBy { get; }
+    public PlanetController ControlledBy { get; set; }
     public bool ControlledByPlayer { get; set; }
 
     public void ReceiveDamage(int damage)

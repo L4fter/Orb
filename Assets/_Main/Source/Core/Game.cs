@@ -8,32 +8,47 @@ public class Game
     private readonly IResolver resolver;
     private readonly InputPlanetController inputPlanetController;
     private readonly AiPlanetController aiPlanetController;
+    private readonly ISerializedCelestialSystemProvider csProvider;
+    private readonly ICelestialSystemSerializer serializer;
     private CelestialSystem celestialSystem;
     private IPlanetFactory planetFactory;
     private IProjectileFactory projectileFactory;
 
-    public Game(IWinLoseHandler winLoseHandler, IResolver resolver, InputPlanetController inputPlanetController, AiPlanetController aiPlanetController)
+    private float timeOfSerialization;
+
+    public Game(IWinLoseHandler winLoseHandler, IResolver resolver, InputPlanetController inputPlanetController, 
+        AiPlanetController aiPlanetController, ISerializedCelestialSystemProvider csProvider, ICelestialSystemSerializer serializer)
     {
         this.winLoseHandler = winLoseHandler;
         this.resolver = resolver;
         this.inputPlanetController = inputPlanetController;
         this.aiPlanetController = aiPlanetController;
+        this.csProvider = csProvider;
+        this.serializer = serializer;
     }
 
     public void MakeTimestep(float deltaTime)
     {
         celestialSystem.SimulateTimestep(deltaTime);
 
-        if (celestialSystem.IsPlayerAlive &&
-            !celestialSystem.GetAliveAiPlanets().Any())
-        {
-            //winLoseHandler.Win();
-            return;
-        }
+//        if (celestialSystem.IsPlayerAlive &&
+//            !celestialSystem.GetAliveAiPlanets().Any())
+//        {
+//            //winLoseHandler.Win();
+//            serializer.Clear();
+//            return;
+//        }
 
-        if (!celestialSystem.IsPlayerAlive)
+//        if (!celestialSystem.IsPlayerAlive)
+//        {
+//            winLoseHandler.Lose();
+//            serializer.Clear();
+//            return;
+//        }
+
+        if (timeOfSerialization + 1 < Time.time)
         {
-            winLoseHandler.Lose();
+            serializer.Serialize(celestialSystem);
         }
         
     }
@@ -41,18 +56,33 @@ public class Game
     public void OnViewReady()
     {
         Debug.Log("View ready");
+//        serializer.Clear();
         
         // Injecting stuff that couldnt be created before the game
         // Mostly from scene, which is loaded later at unknown time
         planetFactory = resolver.Resolve<IPlanetFactory>();
         projectileFactory = resolver.Resolve<IProjectileFactory>();
 
-        if (true)
+        if (csProvider.HasSerializedCelestialSystem)
+        {
+            CreateCelestialSystemFromSerialized();
+        }
+        else
         {
             CreateCelestialSystemFromScene();
         }
         
         projectileFactory.celestialSystem = celestialSystem;
+    }
+
+    private void CreateCelestialSystemFromSerialized()
+    {
+        celestialSystem = csProvider.CreateFromSerialized(projectileFactory, planetFactory);
+        var aiPlanet = celestialSystem.Planets[csProvider.AiControlledPlanetIndex];
+        aiPlanetController.Control(aiPlanet, projectileFactory);
+
+        var playerPlanet = celestialSystem.Planets[csProvider.PlayerControlledPlanetIndex];
+        inputPlanetController.Control(playerPlanet, projectileFactory);
     }
 
     private void CreateCelestialSystemFromScene()
@@ -74,7 +104,6 @@ public class Game
         randomIndex = Random.Range(0, onlyPlanets.Count);
         randomPlanet = onlyPlanets.Skip(randomIndex).First();
         aiPlanetController.Control(randomPlanet, projectileFactory);
-        
     }
 
     public void Discard()
@@ -88,63 +117,16 @@ public class Game
     }
 }
 
-public class PlanetController
+public interface ICelestialSystemSerializer
 {
-    protected IPlanet planet;
-    protected IProjectileFactory factory;
-    protected void ShootAtDirection(Vector2 direction)
-    {
-        Vector2 pos2d = planet.SimulatedEntity.Position;
-        var distanceFromCenter = 1f;
-        var bullet = factory.CreateBullet(pos2d + direction * distanceFromCenter);
-        bullet.Velocity = planet.SimulatedEntity.Velocity;
-        bullet.Acceleration = direction * 4;
-        bullet.TimeForAcceleration = 0.2f;
-    }
+    void Serialize(CelestialSystem cs);
+    void Clear();
 }
 
-public class AiPlanetController : PlanetController, IUpdatesReceiver
+public interface ISerializedCelestialSystemProvider
 {
-    private float lastShootTime = Time.time;
-    
-    public void Update()
-    {
-        if (lastShootTime + 1 > Time.time)
-        {
-            return;
-        }
-        
-        ShootAtDirection(Random.insideUnitCircle);
-        lastShootTime = Time.time;
-    }
-
-    public void Control(IPlanet randomPlanet, IProjectileFactory projectileFactory)
-    {
-        factory = projectileFactory;
-        this.planet = randomPlanet;
-    }
-}
-
-public interface IUpdatesReceiver
-{
-    void Update();
-}
-
-public class InputPlanetController : PlanetController, IInputReceiver
-{
-    public void Fire(Vector2 target)
-    {
-        var pos2d = planet.SimulatedEntity.Position;
-        var direction = (target - pos2d).normalized;
-        Debug.DrawLine(pos2d, pos2d + direction, Color.red);
-        
-        ShootAtDirection(direction);
-    }
-
-    public void Control(IPlanet randomPlanet, IProjectileFactory projectileFactory)
-    {
-        factory = projectileFactory;
-        this.planet = randomPlanet;
-        planet.ControlledByPlayer = true;
-    }
+    bool HasSerializedCelestialSystem { get; }
+    int AiControlledPlanetIndex { get; }
+    int PlayerControlledPlanetIndex { get;}
+    CelestialSystem CreateFromSerialized(IProjectileFactory projectileFactory, IPlanetFactory planetFactory);
 }

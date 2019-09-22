@@ -18,7 +18,7 @@ public class ProjectileFactory : DiMonoBehaviour, IProjectileFactory
     {
         var bullet = Instantiate(bulletPrefab, position, Quaternion.identity);
         var gravitatingObject = bullet.GetComponent<GravitatingObject>();
-        celestialSystem.Add(gravitatingObject);
+        celestialSystem.AddProjectile(gravitatingObject);
         gravitatingObject.Position = position;
         return gravitatingObject;
     }
