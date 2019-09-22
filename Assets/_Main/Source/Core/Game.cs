@@ -22,7 +22,7 @@ public class Game
         if (celestialSystem.IsPlayerAlive &&
             !celestialSystem.GetAliveAiPlanets().Any())
         {
-            winLoseHandler.Win();
+            //winLoseHandler.Win();
             return;
         }
 
@@ -49,7 +49,7 @@ public class Game
 
     private void CreateCelestialSystemFromScene()
     {
-        celestialSystem = new CelestialSystem();
+        celestialSystem = resolver.Resolve<CelestialSystem>();
         var planets = planetFactory.CollectAllAvailablePlanets();
         celestialSystem.Add(planets);
     }

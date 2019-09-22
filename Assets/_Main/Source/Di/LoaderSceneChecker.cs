@@ -5,8 +5,8 @@ public class LoaderSceneChecker : MonoBehaviour
 {
     [SerializeField] 
     private bool isCurrentSceneLoader;
-    
-    private static bool wasLoaderSceneLoaded;
+
+    public static bool wasLoaderSceneLoaded { get; private set; }
     
     private void Awake()
     {

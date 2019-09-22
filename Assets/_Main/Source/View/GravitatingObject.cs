@@ -14,13 +14,11 @@ public class GravitatingObject : MonoBehaviour, ISimulatedEntity
     private void Start()
     {
         this.Position = this.transform.position;
-
-        FindObjectOfType<GlobalSolver>().Solver.AddEntity(this);
     }
 
     private void OnDestroy()
     {
-        FindObjectOfType<GlobalSolver>()?.Solver?.RemoveEntity(this);
+        
     }
 
     public void StartAcceleration(Vector2 acc, float time)

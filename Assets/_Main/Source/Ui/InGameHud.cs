@@ -24,7 +24,7 @@ public class InGameHud : DiMonoBehaviour, IGameHudController
 
     private void OnDestroy()
     {
-        gameHudProvider.Unregister(this);
+        gameHudProvider?.Unregister(this);
     }
 
     [UsedImplicitly]

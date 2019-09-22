@@ -28,7 +28,7 @@ public class Planet : MonoBehaviour, IPlanet
 
         if (hp <= 0)
         {
-            Destroy(this.gameObject);
+//            Destroy(this.gameObject);
             Debug.Log($"Planet destroyed {gameObject.name}");
         }
     }

@@ -7,6 +7,10 @@ namespace Meta.PoorMansDi
     {
         protected virtual void Awake()
         {
+            if (!LoaderSceneChecker.wasLoaderSceneLoaded)
+            {
+                return;
+            }
             DiBase.Injector.InjectInto(this);
         }
     }

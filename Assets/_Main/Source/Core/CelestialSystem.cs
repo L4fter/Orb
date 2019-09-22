@@ -1,10 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 
-internal class CelestialSystem
+public class CelestialSystem
 {
     private Solver solver;
     private IPlanet[] planets;
+
+    public CelestialSystem(Solver solver)
+    {
+        this.solver = solver;
+    }
 
     public void SimulateTimestep(float dT)
     {
@@ -21,5 +26,9 @@ internal class CelestialSystem
     public void Add(IEnumerable<IPlanet> planets)
     {
         this.planets = planets.ToArray();
+        foreach (var planet in this.planets)
+        {
+            solver.AddEntity(planet.SimulatedEntity);
+        }
     }
 }
