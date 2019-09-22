@@ -49,7 +49,11 @@ public class InGameHud : DiMonoBehaviour, IGameHudController
     public async Task<bool> ShowWinMenu()
     {
         Debug.Log("ShowWin");
-        return false;
+        
+        winPanel.SetActive(true);
+        tcsForWinLostPanel = new TaskCompletionSource<bool>();
+        
+        return await tcsForWinLostPanel.Task;
     }
 
     public async Task<bool> ShowLoseMenu()
@@ -66,6 +70,7 @@ public class InGameHud : DiMonoBehaviour, IGameHudController
     {
         tcsForWinLostPanel.SetResult(shouldRestart);
         losePanel.SetActive(false);
+        winPanel.SetActive(false);
     }
 
     public void Restart()
@@ -77,9 +82,4 @@ public class InGameHud : DiMonoBehaviour, IGameHudController
     {
         tcsForWinLostPanel.SetResult(false);
     }
-}
-
-public interface IGameHudProvider
-{
-    
 }

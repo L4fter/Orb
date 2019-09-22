@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-public class GameHudProvider : IGameHudProvider, IGameHudController
+public class GameHudProvider : IGameHudController
 {
     private InGameHud gameHud;
 

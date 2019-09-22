@@ -6,16 +6,11 @@ using UnityEngine.Serialization;
 public class GravitatingObject : MonoBehaviour, ISimulatedEntity
 {
     public const float GConstant = 0.005f;
-    public Vector2 velocity;
     [FormerlySerializedAs("Mass")]
     public float mass = 1;
 
     public bool attractsOthers = false;
     public bool isAttractedByOthers = true;
-    public Vector2 acceleration;
-
-    public float accelerationTime = 0f;
-
     private void Start()
     {
         this.Position = this.transform.position;

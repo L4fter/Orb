@@ -1,18 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Shooter : MonoBehaviour
 {
     public GameObject BulletPrefab;
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
+   // Update is called once per frame
     void Update()
     {
         var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -26,7 +18,7 @@ public class Shooter : MonoBehaviour
             var distanceFromCenter = this.transform.localScale.x * 0.1f + 0.1f;
             var bullet = Instantiate(BulletPrefab, pos2d + direction * distanceFromCenter, Quaternion.identity);
             var gravitatingObject = bullet.GetComponent<GravitatingObject>();
-            gravitatingObject.velocity = this.GetComponent<GravitatingObject>().velocity;
+            gravitatingObject.Velocity = this.GetComponent<GravitatingObject>().Velocity;
             gravitatingObject.StartAcceleration(direction*4, 0.2f);
         }    
     }
