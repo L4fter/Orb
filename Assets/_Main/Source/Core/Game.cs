@@ -31,20 +31,20 @@ public class Game
     {
         celestialSystem.SimulateTimestep(deltaTime);
 
-//        if (celestialSystem.IsPlayerAlive &&
-//            !celestialSystem.GetAliveAiPlanets().Any())
-//        {
-//            //winLoseHandler.Win();
-//            serializer.Clear();
-//            return;
-//        }
+        if (inputPlanetController.Planet.Hp > 0 &&
+            aiPlanetController.Planet.Hp <= 0)
+        {
+            winLoseHandler.Win();
+            serializer.Clear();
+            return;
+        }
 
-//        if (!celestialSystem.IsPlayerAlive)
-//        {
-//            winLoseHandler.Lose();
-//            serializer.Clear();
-//            return;
-//        }
+        if (inputPlanetController.Planet.Hp <= 0)
+        {
+            winLoseHandler.Lose();
+            serializer.Clear();
+            return;
+        }
 
         if (timeOfSerialization + 1 < Time.time)
         {

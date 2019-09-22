@@ -4,6 +4,8 @@ public class PlanetController
 {
     protected IPlanet planet;
     protected IProjectileFactory factory;
+
+    public IPlanet Planet => planet;
     protected void ShootAtDirection(Vector2 direction)
     {
         Vector2 pos2d = planet.SimulatedEntity.Position;
@@ -19,5 +21,6 @@ public class PlanetController
         factory = projectileFactory;
         this.planet = randomPlanet;
         planet.ControlledBy = this;
+        
     }
 }
