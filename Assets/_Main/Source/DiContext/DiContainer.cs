@@ -13,7 +13,7 @@ public class DiContainer : MonoBehaviour
         binder.Bind<IAppControls>().ToSingle<AppStateContainer>();
         binder.Bind<IWinLoseHandler>().ToSingle<WinLoseHandler>();
         
-        binder.Bind<IGameControls>().ToSingle<GameControls>();
+        binder.Bind<IGameProvider>().ToSingle<GameProvider>();
         binder.Bind<Game>().ToFactoryOf<Game>();
         
         binder.Bind<IGameHudController>().ToSingle<GameHudProvider>();

@@ -7,6 +7,7 @@ public class Game
     private IWinLoseHandler winLoseHandler;
     private readonly IResolver resolver;
     private CelestialSystem celestialSystem;
+    private IPlanetFactory planetFactory;
 
     public Game(IWinLoseHandler winLoseHandler, IResolver resolver)
     {
@@ -16,7 +17,7 @@ public class Game
 
     public void MakeTimestep(float deltaTime)
     {
-        celestialSystem.SimulateTimestep();
+        celestialSystem.SimulateTimestep(deltaTime);
 
         if (celestialSystem.IsPlayerAlive &&
             !celestialSystem.GetAliveAiPlanets().Any())
@@ -35,11 +36,22 @@ public class Game
     public void OnViewReady()
     {
         Debug.Log("View ready");
+        
         // Injecting stuff that couldnt be created before the game
-        // Mostly from scene, which is loaded later at unlnown time
+        // Mostly from scene, which is loaded later at unknown time
+        planetFactory = resolver.Resolve<IPlanetFactory>();
 
-        var planetFactory = resolver.Resolve<IPlanetFactory>();
-        planetFactory.CreatePlanet(new Vector2(10, 10));
+        if (true)
+        {
+            CreateCelestialSystemFromScene();
+        }
+    }
+
+    private void CreateCelestialSystemFromScene()
+    {
+        celestialSystem = new CelestialSystem();
+        var planets = planetFactory.CollectAllAvailablePlanets();
+        celestialSystem.Add(planets);
     }
 
     public void Discard()
@@ -49,26 +61,6 @@ public class Game
 
     public void WaitForViewReady()
     {
-        Debug.Log("Wait for view ready");
         // just chill
     }
-}
-
-internal class CelestialSystem
-{
-    public void SimulateTimestep()
-    {
-        
-    }
-
-    public bool IsPlayerAlive => true;
-
-    public Planet[] GetAliveAiPlanets()
-    {
-        return new Planet[0];
-    }
-}
-
-internal class Planet
-{
 }

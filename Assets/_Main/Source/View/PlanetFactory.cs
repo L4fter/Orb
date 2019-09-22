@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using JetBrains.Annotations;
 using Meta.PoorMansDi;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ public class PlanetFactory : DiMonoBehaviour, IPlanetFactory
 {
     public Planet planetPrefab;
     
+    [UsedImplicitly]
     public void Init(IBinder binder)
     {
         binder.Bind<IPlanetFactory>().ToSingle(this);

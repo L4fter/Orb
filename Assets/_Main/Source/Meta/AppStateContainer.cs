@@ -5,18 +5,18 @@ using UnityEngine.SceneManagement;
 public class AppStateContainer : IAppControls
 {
     private AppState currentState;
-    private IGameControls gameControls;
+    private IGameProvider gameProvider;
 
-    public AppStateContainer(IGameControls gameControls)
+    public AppStateContainer(IGameProvider gameProvider)
     {
-        this.gameControls = gameControls;
+        this.gameProvider = gameProvider;
     }
 
     public void StartGame()
     {
         if (currentState == AppState.GameNotStarted)
         {
-            gameControls.CreateNewGame();
+            gameProvider.CreateNewGame();
             
             SceneManager.LoadScene("Prototype");
         }
