@@ -4,15 +4,18 @@ public class WinLoseHandler : IWinLoseHandler
 {
     private readonly IAppControls appControls;
     private readonly IGameHudController gameHudController;
+    private readonly ICelestialSystemSerializer serializer;
 
-    public WinLoseHandler(IAppControls appControls, IGameHudController gameHudController)
+    public WinLoseHandler(IAppControls appControls, IGameHudController gameHudController, ICelestialSystemSerializer serializer)
     {
         this.appControls = appControls;
         this.gameHudController = gameHudController;
+        this.serializer = serializer;
     }
 
     public async void Win()
     {
+        serializer.Clear();
         var shouldRestart = await gameHudController.ShowWinMenu();
         ExitAndRestartIfNeeded(shouldRestart);
         // Show win text
@@ -31,6 +34,7 @@ public class WinLoseHandler : IWinLoseHandler
 
     public async void Lose()
     {
+        serializer.Clear();
         var shouldRestart = await gameHudController.ShowLoseMenu();
         ExitAndRestartIfNeeded(shouldRestart);
     }

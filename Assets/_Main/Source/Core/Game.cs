@@ -40,14 +40,12 @@ public class Game
             aiPlanetController.Planet.Hp <= 0)
         {
             winLoseHandler.Win();
-            serializer.Clear();
             return;
         }
 
         if (inputPlanetController.Planet.Hp <= 0)
         {
             winLoseHandler.Lose();
-            serializer.Clear();
             return;
         }
 
