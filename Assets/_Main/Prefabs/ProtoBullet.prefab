@@ -97,12 +97,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 789559007c4408f47bea71d70e62767f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: {x: -2.3106399, y: -2.6997962}
   mass: 1
   attractsOthers: 0
   isAttractedByOthers: 1
-  acceleration: {x: 1.9306004, y: -2.296254}
-  accelerationTime: 0.2
 --- !u!58 &-2648688629464491378
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -170,7 +167,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: e1f1eee72f2904a419ac9ef5ba010aa2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -191,7 +188,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 5
+  m_Time: 2
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.02

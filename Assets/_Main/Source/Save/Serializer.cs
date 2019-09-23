@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Core;
 using Meta.PoorMansDi;
 using UnityEngine;
 
@@ -33,6 +34,8 @@ public class Serializer : ICelestialSystemSerializer, ISerializedCelestialSystem
                 entity = SerializedEntity.FromEntity(planet.SimulatedEntity),
                 hp = planet.Hp,
                 startHp = planet.StartHp,
+                color = planet.Appearance.color,
+                weaponType = planet.Weapon?.Type.Name,
             });
         }
         
@@ -41,6 +44,7 @@ public class Serializer : ICelestialSystemSerializer, ISerializedCelestialSystem
             entity = SerializedEntity.FromEntity(cs.centralStar.SimulatedEntity),
             hp = cs.centralStar.Hp,
             startHp = cs.centralStar.StartHp,
+            color = cs.centralStar.Appearance.color,
             isCentral = true,
         });
         
@@ -82,7 +86,8 @@ public class Serializer : ICelestialSystemSerializer, ISerializedCelestialSystem
     public bool HasSerializedCelestialSystem => scs != null;
     public int AiControlledPlanetIndex => scs.aiIndex;
     public int PlayerControlledPlanetIndex => scs.playerIndex;
-    public CelestialSystem CreateFromSerialized(IProjectileFactory projectileFactory, IPlanetFactory planetFactory)
+    public CelestialSystem CreateFromSerialized(IProjectileFactory projectileFactory, IPlanetFactory planetFactory,
+        IWeaponFactory weaponFactory)
     {
         var celestialSystem = resolver.Resolve<CelestialSystem>();
         var planets = new List<IPlanet>();
@@ -94,7 +99,9 @@ public class Serializer : ICelestialSystemSerializer, ISerializedCelestialSystem
 
         foreach (var serializedPlanet in scs.planets.Except(new []{central}))
         {
-            var planet = planetFactory.CreatePlanet(serializedPlanet.entity.pos);
+            var appearance = new PlanetAppearance() {color = serializedPlanet.color};
+            var planet = planetFactory.CreatePlanet(serializedPlanet.entity.pos, appearance);
+            weaponFactory.AddWeapon(serializedPlanet.weaponType, planet);
             serializedPlanet.entity.FillIn(planet.SimulatedEntity);
             planets.Add(planet);
         }
@@ -127,12 +134,15 @@ internal class SerializedPlanet
     public int hp;
     public int startHp;
     public bool isCentral;
+    public Color color;
+    public string weaponType;
 }
 
 [Serializable]
 internal class SerializedProjectile
 {
     public SerializedEntity entity;
+    public int damage;
 }
 
 [Serializable]

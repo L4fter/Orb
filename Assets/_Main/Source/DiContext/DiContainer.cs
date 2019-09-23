@@ -1,4 +1,5 @@
 ﻿using System;
+using Core;
 using Meta.PoorMansDi;
 using UnityEngine;
 
@@ -27,5 +28,10 @@ public class DiContainer : MonoBehaviour
         
         binder.Bind<ISerializedCelestialSystemProvider>().ToSingle<Serializer>();
         binder.Bind<ICelestialSystemSerializer>().ToSingle<Serializer>();
+            
+        binder.Bind<IWeaponFactory>().ToSingle<WeaponFactory>();
+        
+        binder.Bind<IPlayerStatsProvider>().ToSingle<PlayerStatsProvider>();
+        binder.Bind<PlayerStatsProvider>().ToSingle<PlayerStatsProvider>();
     }
 }

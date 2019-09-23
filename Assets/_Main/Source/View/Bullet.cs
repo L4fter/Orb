@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Threading.Tasks;
+using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    private int damage = 20;
+    public int damage = 20;
+    private IPlanet ownerPlanet;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -12,10 +14,18 @@ public class Bullet : MonoBehaviour
             return;
         }
 
-        planet.ReceiveDamage(damage);
+        if (planet != ownerPlanet)
+        {
+            planet.ReceiveDamage(damage);
+        }
         
         Destroy(this.gameObject);
         GetComponent<GravitatingObject>().DestroyEntity();
-        Debug.Log($"Bullet hit {other.gameObject.name}");
+    }
+
+    public async void SetOwnership(IPlanet planet, float delay)
+    {
+        ownerPlanet = planet;
+        this.GetComponent<TrailRenderer>().startColor = planet.Appearance.color;
     }
 }

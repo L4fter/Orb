@@ -1,24 +1,20 @@
-﻿using UnityEngine;
+﻿using Core;
+using UnityEngine;
 
 public class PlanetController
 {
     protected IPlanet planet;
-    protected IProjectileFactory factory;
+    protected IWeapon weapon;
 
     public IPlanet Planet => planet;
     protected void ShootAtDirection(Vector2 direction)
     {
-        Vector2 pos2d = planet.SimulatedEntity.Position;
-        var distanceFromCenter = 1f;
-        var bullet = factory.CreateBullet(pos2d + direction * distanceFromCenter);
-        bullet.Velocity = planet.SimulatedEntity.Velocity;
-        bullet.Acceleration = direction * 4;
-        bullet.TimeForAcceleration = 0.2f;
+        weapon.Shoot(direction);
     }
 
-    public virtual void Control(IPlanet randomPlanet, IProjectileFactory projectileFactory)
+    public virtual void Control(IPlanet randomPlanet, IWeapon weapon)
     {
-        factory = projectileFactory;
+        this.weapon = weapon;
         this.planet = randomPlanet;
         planet.ControlledBy = this;
         

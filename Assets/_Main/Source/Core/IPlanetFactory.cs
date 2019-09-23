@@ -2,7 +2,7 @@
 
 public interface IPlanetFactory
 {
-    IPlanet CreatePlanet(Vector2 position);
+    IPlanet CreatePlanet(Vector2 position, PlanetAppearance? appearance = default);
 
     IPlanet[] CollectAllAvailablePlanets();
 }

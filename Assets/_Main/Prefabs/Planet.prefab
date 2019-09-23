@@ -111,8 +111,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed8704a949d1dee46bb5bb7e2c5e013f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startHp: 100
   hp: 100
+  startHp: 100
 --- !u!58 &899526491843403457
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -147,7 +147,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 17002da30dc47f448a98acb9948107ec, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -168,7 +168,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 15
+  m_Time: 4
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.02

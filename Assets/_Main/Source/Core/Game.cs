@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Core;
 using Meta.PoorMansDi;
 using UnityEngine;
 
@@ -10,6 +11,8 @@ public class Game
     private readonly AiPlanetController aiPlanetController;
     private readonly ISerializedCelestialSystemProvider csProvider;
     private readonly ICelestialSystemSerializer serializer;
+    private readonly PlayerStatsProvider playerStatsProvider;
+    private IWeaponFactory weaponFactory;
     private CelestialSystem celestialSystem;
     private IPlanetFactory planetFactory;
     private IProjectileFactory projectileFactory;
@@ -17,7 +20,8 @@ public class Game
     private float timeOfSerialization;
 
     public Game(IWinLoseHandler winLoseHandler, IResolver resolver, InputPlanetController inputPlanetController, 
-        AiPlanetController aiPlanetController, ISerializedCelestialSystemProvider csProvider, ICelestialSystemSerializer serializer)
+        AiPlanetController aiPlanetController, ISerializedCelestialSystemProvider csProvider, ICelestialSystemSerializer serializer,
+        PlayerStatsProvider playerStatsProvider)
     {
         this.winLoseHandler = winLoseHandler;
         this.resolver = resolver;
@@ -25,6 +29,7 @@ public class Game
         this.aiPlanetController = aiPlanetController;
         this.csProvider = csProvider;
         this.serializer = serializer;
+        this.playerStatsProvider = playerStatsProvider;
     }
 
     public void MakeTimestep(float deltaTime)
@@ -56,12 +61,12 @@ public class Game
     public void OnViewReady()
     {
         Debug.Log("View ready");
-//        serializer.Clear();
         
         // Injecting stuff that couldnt be created before the game
         // Mostly from scene, which is loaded later at unknown time
         planetFactory = resolver.Resolve<IPlanetFactory>();
         projectileFactory = resolver.Resolve<IProjectileFactory>();
+        weaponFactory = resolver.Resolve<IWeaponFactory>();
 
         if (csProvider.HasSerializedCelestialSystem)
         {
@@ -77,12 +82,13 @@ public class Game
 
     private void CreateCelestialSystemFromSerialized()
     {
-        celestialSystem = csProvider.CreateFromSerialized(projectileFactory, planetFactory);
+        celestialSystem = csProvider.CreateFromSerialized(projectileFactory, planetFactory, weaponFactory);
         var aiPlanet = celestialSystem.Planets[csProvider.AiControlledPlanetIndex];
-        aiPlanetController.Control(aiPlanet, projectileFactory);
+        aiPlanetController.Control(aiPlanet, aiPlanet.Weapon);
 
         var playerPlanet = celestialSystem.Planets[csProvider.PlayerControlledPlanetIndex];
-        inputPlanetController.Control(playerPlanet, projectileFactory);
+        inputPlanetController.Control(playerPlanet, playerPlanet.Weapon);
+        playerStatsProvider.SetPlayerPlanet(playerPlanet);
     }
 
     private void CreateCelestialSystemFromScene()
@@ -94,27 +100,55 @@ public class Game
         celestialSystem.AddCentralStar(centralStar);
         celestialSystem.Add(planets);
 
+        var allAvailableWeapons = weaponFactory.GetAllAvailableTypes();
+
         var onlyPlanets = planets.Except(new[] {centralStar}).ToList();
         var randomIndex = Random.Range(0, onlyPlanets.Count);
+
         var randomPlanet = onlyPlanets.Skip(randomIndex).First();
-        inputPlanetController.Control(randomPlanet, projectileFactory);
+        var randomWeapon = allAvailableWeapons[Random.Range(0, allAvailableWeapons.Count)];
+        weaponFactory.AddWeapon(randomWeapon, randomPlanet);
+        inputPlanetController.Control(randomPlanet, randomPlanet.Weapon);
+        playerStatsProvider.SetPlayerPlanet(randomPlanet);
 
         onlyPlanets.Remove(randomPlanet);
         
         randomIndex = Random.Range(0, onlyPlanets.Count);
         randomPlanet = onlyPlanets.Skip(randomIndex).First();
-        aiPlanetController.Control(randomPlanet, projectileFactory);
+        randomWeapon = allAvailableWeapons[Random.Range(0, allAvailableWeapons.Count)];
+        weaponFactory.AddWeapon(randomWeapon, randomPlanet);
+        aiPlanetController.Control(randomPlanet, randomPlanet.Weapon);
     }
 
     public void Discard()
     {
-        
+        playerStatsProvider.SetPlayerPlanet(null);
     }
 
     public void WaitForViewReady()
     {
         // just chill
     }
+}
+
+public class PlayerStatsProvider : IPlayerStatsProvider
+{
+    private IPlanet planet;
+
+    public void SetPlayerPlanet(IPlanet planet)
+    {
+        this.planet = planet;
+    }
+
+
+    public float HpPercentage => planet == null ? 1 : planet.Hp/(float)planet.StartHp;
+    public float ReloadPercentage => planet?.Weapon.ReloadAmount ?? 1;
+} 
+
+public interface IPlayerStatsProvider
+{
+    float HpPercentage { get; }
+    float ReloadPercentage { get; }
 }
 
 public interface ICelestialSystemSerializer
@@ -128,5 +162,6 @@ public interface ISerializedCelestialSystemProvider
     bool HasSerializedCelestialSystem { get; }
     int AiControlledPlanetIndex { get; }
     int PlayerControlledPlanetIndex { get;}
-    CelestialSystem CreateFromSerialized(IProjectileFactory projectileFactory, IPlanetFactory planetFactory);
+    CelestialSystem CreateFromSerialized(IProjectileFactory projectileFactory, IPlanetFactory planetFactory,
+        IWeaponFactory weaponFactory);
 }

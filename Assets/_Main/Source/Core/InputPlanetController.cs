@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Core;
+using UnityEngine;
 
 public class InputPlanetController : PlanetController, IInputReceiver
 {
@@ -11,9 +12,9 @@ public class InputPlanetController : PlanetController, IInputReceiver
         ShootAtDirection(direction);
     }
 
-    public override void Control(IPlanet randomPlanet, IProjectileFactory projectileFactory)
+    public override void Control(IPlanet randomPlanet, IWeapon weapon)
     {
-        base.Control(randomPlanet, projectileFactory);
+        base.Control(randomPlanet, weapon);
         planet.ControlledByPlayer = true;
     }
 }
