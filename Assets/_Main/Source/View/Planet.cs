@@ -1,6 +1,6 @@
-﻿using Core;
+﻿using System;
+using Core;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Planet : MonoBehaviour, IPlanet
 {
@@ -12,6 +12,11 @@ public class Planet : MonoBehaviour, IPlanet
     public int StartHp => startHp;
     public PlanetController ControlledBy { get; set; }
     public bool ControlledByPlayer { get; set; }
+
+    public void Start()
+    {
+        Created?.Invoke(this);
+    }
 
     public void ReceiveDamage(int damage)
     {
@@ -31,6 +36,7 @@ public class Planet : MonoBehaviour, IPlanet
 
     public PlanetAppearance Appearance { get; set; }
     public IWeapon Weapon { get; set; }
+    public static event Action<Planet> Created;
 
     public void SetAppearance(Color color)
     {
